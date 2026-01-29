@@ -28,7 +28,7 @@ Executed `git fetch --unshallow` to convert the shallow clone into a complete re
 ### How to Avoid This Issue
 1. **Clone with full history**: Use `git clone` without the `--depth` flag
 2. **For existing shallow clones**: Run `git fetch --unshallow` to get full history
-3. **Check if shallow**: Use `ls .git/shallow` - if file exists, it's a shallow clone
+3. **Check if shallow**: Use `git rev-parse --is-shallow-repository` (returns `true` if shallow, `false` otherwise)
 
 ### Why Shallow Clones Can Cause Issues
 - GitHub needs complete history for branch comparisons
@@ -45,8 +45,11 @@ Executed `git fetch --unshallow` to convert the shallow clone into a complete re
 ## Verification
 You can verify the repository is no longer shallow by:
 ```bash
-# This should return "No such file or directory"
-cat .git/shallow
+# Check if repository is shallow (should return "false")
+git rev-parse --is-shallow-repository
+
+# Alternative: Check if shallow file exists (should return "not shallow")
+test -f .git/shallow && echo "shallow" || echo "not shallow"
 
 # View full commit history
 git log --oneline -30
